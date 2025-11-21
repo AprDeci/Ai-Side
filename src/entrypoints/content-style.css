@@ -1,0 +1,24 @@
+/* entrypoints/content.css */
+.my-floating-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 999999; /* 确保层级足够高 */
+  font-size: 12px;
+  transition: transform 0.2s;
+}
+
+.my-floating-btn:hover {
+  transform: scale(1.1);
+  background-color: #2563eb;
+}
