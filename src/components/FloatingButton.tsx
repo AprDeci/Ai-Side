@@ -1,16 +1,8 @@
-// src/components/FloatingButton.tsx
-
-import { browser } from "wxt/browser";
-
-export default function FloatingButton() {
-  const openSidePanel = () => {
-    browser.runtime.sendMessage({ action: "open_sidebar" });
-  };
-
+export default function FloatingButton(props: any) {
   return (
-    <div>
-      <div className="fixed right-0 bottom-1/2 cursor-pointer rounded-full bg-orange-200 w-12 h-12 flex items-center justify-center">
-        ⚡
+    <div onClick={props.onClick}>
+      <div className="fixed right-0 top-1/2 -translate-y-1/2 rounded-l-full cursor-pointer bg-blue-300 h-12 w-12 flex items-center justify-center">
+        八奈见
       </div>
     </div>
   );

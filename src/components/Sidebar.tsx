@@ -21,16 +21,10 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* 悬浮按钮 - 使用 UnoCSS 类 */}
-      {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="fixed bottom-5 right-5 w-12 h-12 rounded-full bg-blue-500 text-white text-xl font-bold cursor-pointer z-999999 shadow-lg hover:bg-blue-600 hover:scale-110 transition-all duration-200 flex items-center justify-center">
-          ⚡
-        </button>
-      )}
+      {/* 悬浮按钮 */}
+      {!isOpen && <FloatingButton onClick={() => setIsOpen(true)} />}
 
-      {/* 侧边栏本体 - 使用 UnoCSS 类 */}
+      {/* 侧边栏本体 */}
       <div
         className={`fixed top-0 right-0 h-screen w-87.5 bg-white shadow-[-4px_0_12px_rgba(0,0,0,0.1)] z-2147483647 transform transition-transform duration-300 ease-in-out flex flex-col ${
           isOpen ? "translate-x-0" : "translate-x-full"
