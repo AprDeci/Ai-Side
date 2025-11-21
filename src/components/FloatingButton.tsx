@@ -1,5 +1,4 @@
 // src/components/FloatingButton.tsx
-import React from "react";
 
 import { browser } from "wxt/browser";
 

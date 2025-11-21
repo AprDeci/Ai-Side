@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +22,10 @@ export default function Sidebar() {
   return (
     <>
       {/* 1. 悬浮按钮 (当侧边栏打开时，可以选择隐藏按钮，也可以保留) */}
-      {!isOpen && <button className="floating-toggle-btn">Open</button>}
+
+      <button onClick={() => setIsOpen(true)} className="floating-toggle-btn">
+        Open
+      </button>
 
       {/* 2. 侧边栏本体 */}
       <div className={`sidebar-container ${isOpen ? "open" : ""}`}>
@@ -35,6 +39,9 @@ export default function Sidebar() {
         <div style={{ flex: 1, padding: "20px", overflowY: "auto" }}>
           <p>这里是侧边栏的内容区域...</p>
           <p>可以放聊天框、表单、搜索结果等。</p>
+          <div>
+            <Button>Open</Button>
+          </div>
         </div>
       </div>
     </>

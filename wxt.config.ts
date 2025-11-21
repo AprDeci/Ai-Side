@@ -11,6 +11,11 @@ export default defineConfig({
 			default_title: "打开侧边栏",
 		},
 	},
+	vite: () => ({
+		resolve: {
+			dedupe: ["react", "react-dom", "react-dom/client"],
+		},
+	}),
 	unocss: {
 		// Exclude unocss from running for the background
 		excludeEntrypoints: ["background"],

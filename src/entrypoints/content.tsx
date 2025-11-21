@@ -19,7 +19,7 @@ export default defineContentScript({
 			position: "inline", // 必须是 inline，因为我们内部用了 fixed 定位
 			onMount: (container) => {
 				const root = ReactDOM.createRoot(container);
-				root.render(Sidebar());
+				root.render(<Sidebar/>);
 				return root;
 			},
 			onRemove: (root) => {
