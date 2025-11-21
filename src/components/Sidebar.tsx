@@ -5,11 +5,9 @@ import { ChevronLeft, ChevronRight, MessageSquare } from "lucide-react"; // 假�
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
-  // 侧边栏宽度配置 (方便统一修改)
   const sidebarWidth = "w-[350px]";
 
   useEffect(() => {
-    // 挤压网页内容 (可选，如果不想要挤压效果可以删掉这部分)
     if (isOpen) {
       document.body.style.transition =
         "margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
@@ -49,7 +47,7 @@ export default function Sidebar() {
 
         <div className="flex flex-col h-full w-full">
           {/* 头部 */}
-          <div className="p-5 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
+          <div className="h-10 p-5 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
             <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
               Ai-Side
             </h3>
