@@ -51,7 +51,7 @@ export default function Sidebar() {
 				<div className="flex flex-col h-full w-full">
 					{/* 头部 */}
 					<div className="h-10 p-5 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
-						<h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+						<h3 className="text-lg font-bold text-yellow-800 flex items-center gap-2">
 							Ai-Side
 						</h3>
 						<button
