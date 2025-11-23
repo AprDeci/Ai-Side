@@ -5,36 +5,36 @@ import { Settings } from "lucide-react";
 import AIConfig from "@/components/options/ai-config";
 
 const tabs = [
-	{
-		id: "general",
-		name: "通用",
-		icon: <Settings />,
-		content: <General />,
-	},
+	// {
+	// 	id: "general",
+	// 	name: "通用",
+	// 	icon: <Settings />,
+	// 	content: <General />,
+	// },
 	{
 		id: "ai-config",
 		name: "AI 配置",
 		icon: <Settings />,
 		content: <AIConfig />,
 	},
-	{
-		id: "custom",
-		name: "自定义指令",
-		icon: <Settings />,
-		content: <General />,
-	},
+	// {
+	// 	id: "custom",
+	// 	name: "自定义指令",
+	// 	icon: <Settings />,
+	// 	content: <General />,
+	// },
 ];
 
 export default function App() {
-	const [activeTab, setActiveTab] = useState("general");
+	const [activeTab, setActiveTab] = useState(tabs[0].id);
 	const [activeTabIndex, setActiveTabIndex] = useState(0);
 	const tabRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-	const currentTab = tabs.find(tab => tab.id === activeTab);
+	const currentTab = tabs.find((tab) => tab.id === activeTab);
 
 	// 更新当前活跃选项卡的索引
 	useEffect(() => {
-		const index = tabs.findIndex(tab => tab.id === activeTab);
+		const index = tabs.findIndex((tab) => tab.id === activeTab);
 		setActiveTabIndex(index);
 	}, [activeTab]);
 
@@ -60,7 +60,7 @@ export default function App() {
 								height: "40px",
 							}}
 						/>
-						
+
 						{/* 选项卡列表 */}
 						{tabs.map((tab, index) => (
 							<div
@@ -87,9 +87,7 @@ export default function App() {
 							</div>
 						))}
 					</div>
-					<div className="flex-1">
-						{currentTab?.content}
-					</div>
+					<div className="flex-1">{currentTab?.content}</div>
 				</div>
 			</div>
 		</>
