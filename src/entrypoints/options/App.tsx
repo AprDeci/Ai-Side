@@ -2,8 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import General from "@/components/options/general";
 import OptionHeader from "@/components/options/header";
 import { Settings } from "lucide-react";
-import AIConfig from "@/components/options/ai-config";
-
+import AiConfig from "@/components/options/aiConfig";
 const tabs = [
 	// {
 	// 	id: "general",
@@ -15,7 +14,7 @@ const tabs = [
 		id: "ai-config",
 		name: "AI 配置",
 		icon: <Settings />,
-		content: <AIConfig />,
+		content: <AiConfig />,
 	},
 	// {
 	// 	id: "custom",
