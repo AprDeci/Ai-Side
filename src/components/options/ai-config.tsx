@@ -2,18 +2,180 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Brain, Key, MessageCircle, Zap, FileText } from "lucide-react";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { 
+	Cpu, 
+	Plus, 
+	Trash2, 
+	TestTube, 
+	CheckCircle, 
+	XCircle, 
+	Loader2,
+	Settings 
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const AIConfig = () => {
-	const [apiKey, setApiKey] = useState("");
-	const [selectedModel, setSelectedModel] = useState("gpt-3.5-turbo");
-	const [temperature, setTemperature] = useState(0.7);
-	const [maxTokens, setMaxTokens] = useState(2000);
-	const [systemPrompt, setSystemPrompt] = useState("你是一个有用的AI助手。");
+type ProviderType = 'OPENAI' | 'CLAUDE' | 'GEMINI';
+
+interface AiConfig {
+	id: string;
+	name: string;
+	provider: ProviderType;
+	endpoint: string;
+	token: string;
+	isActive: boolean;
+	testResult?: 'success' | 'failed' | 'pending';
+}
+
+const AiConfigs = () => {
+	const [configs, setConfigs] = useState<AiConfig[]>([]);
+	const [isAdding, setIsAdding] = useState(false);
+	const [newConfig, setNewConfig] = useState({
+		name: '',
+		provider: 'OPENAI' as ProviderType,
+		endpoint: '',
+		token: ''
+	});
+
+	const providerOptions = [
+		{ value: 'OPENAI', label: 'OpenAI', description: 'GPT模型API' },
+		{ value: 'CLAUDE', label: 'Claude', description: 'Anthropic Claude API' },
+		{ value: 'GEMINI', label: 'Gemini', description: 'Google Gemini API' }
+	];
+
+	const getProviderInfo = (provider: ProviderType) => {
+		return providerOptions.find(p => p.value === provider);
+	};
+
+	const getDefaultEndpoint = (provider: ProviderType) => {
+		switch (provider) {
+			case 'OPENAI':
+				return 'https://api.openai.com/v1';
+			case 'CLAUDE':
+				return 'https://api.anthropic.com/v1';
+			case 'GEMINI':
+				return 'https://generativelanguage.googleapis.com/v1';
+			default:
+				return '';
+		}
+	};
+
+	const handleProviderChange = (provider: ProviderType) => {
+		setNewConfig(prev => ({
+			...prev,
+			provider,
+			endpoint: getDefaultEndpoint(provider)
+		}));
+	};
+
+	const handleAddConfig = () => {
+		if (!newConfig.name.trim() || !newConfig.endpoint.trim() || !newConfig.token.trim()) {
+			alert('请填写所有必需字段');
+			return;
+		}
+
+		const config: AiConfig = {
+			id: Date.now().toString(),
+			name: newConfig.name.trim(),
+			provider: newConfig.provider,
+			endpoint: newConfig.endpoint.trim(),
+			token: newConfig.token.trim(),
+			isActive: false
+		};
+
+		setConfigs(prev => [...prev, config]);
+		setNewConfig({
+			name: '',
+			provider: 'OPENAI',
+			endpoint: '',
+			token: ''
+		});
+		setIsAdding(false);
+	};
+
+	const handleTestConnection = async (configId: string) => {
+		const config = configs.find(c => c.id === configId);
+		if (!config) return;
+
+		// 更新测试状态
+		setConfigs(prev => prev.map(c => 
+			c.id === configId ? { ...c, testResult: 'pending' } : c
+		));
+
+		try {
+			// 模拟API调用测试连接
+			await new Promise(resolve => setTimeout(resolve, 2000));
+			
+			// 简单的连接测试（实际应该发送真实的API请求）
+			const testUrl = `${config.endpoint}/models`;
+			
+			const response = await fetch(testUrl, {
+				headers: {
+					'Authorization': `Bearer ${config.token}`,
+					'Content-Type': 'application/json'
+				}
+			});
+
+			if (response.ok || response.status === 401) {
+				// 401表示认证失败，但连接成功
+				setConfigs(prev => prev.map(c => 
+					c.id === configId ? { ...c, testResult: 'success' } : c
+				));
+			} else {
+				throw new Error('Connection failed');
+			}
+		} catch (error) {
+			setConfigs(prev => prev.map(c => 
+				c.id === configId ? { ...c, testResult: 'failed' } : c
+			));
+		}
+	};
+
+	const handleToggleActive = (configId: string) => {
+		setConfigs(prev => prev.map(c => ({
+			...c,
+			isActive: c.id === configId ? !c.isActive : false
+		})));
+	};
+
+	const handleDeleteConfig = (configId: string) => {
+		setConfigs(prev => prev.filter(c => c.id !== configId));
+	};
+
+	const handleSaveConfigs = () => {
+		// 这里应该保存到Chrome storage或本地存储
+		console.log('Saving configs:', configs);
+		alert('配置已保存');
+	};
+
+	const getTestResultIcon = (result?: 'success' | 'failed' | 'pending') => {
+		switch (result) {
+			case 'success':
+				return <CheckCircle className="h-4 w-4 text-green-500" />;
+			case 'failed':
+				return <XCircle className="h-4 w-4 text-red-500" />;
+			case 'pending':
+				return <Loader2 className="h-4 w-4 text-blue-500 animate-spin" />;
+			default:
+				return null;
+		}
+	};
 
 	return (
 		<div className="space-y-6">
@@ -21,217 +183,161 @@ const AIConfig = () => {
 				<Card>
 					<CardHeader>
 						<CardTitle className="flex items-center gap-2">
-							<Key className="h-5 w-5" />
-							API 配置
+							<Cpu className="h-5 w-5" />
+							AI配置管理
 						</CardTitle>
 						<CardDescription>
-							配置您的 AI 服务 API 设置
+							配置您的AI提供商设置，支持OpenAI、Claude和Gemini
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-4">
-						<div className="space-y-2">
-							<Label htmlFor="api-key">API 密钥</Label>
-							<Input
-								id="api-key"
-								type="password"
-								placeholder="输入您的 API 密钥"
-								value={apiKey}
-								onChange={(e) => setApiKey(e.target.value)}
-							/>
-							<p className="text-sm text-muted-foreground">
-								您的 API 密钥将安全存储在本地
-							</p>
-						</div>
-
-						<Separator />
-
-						<div className="space-y-2">
-							<Label>API 端点</Label>
-							<Select defaultValue="openai">
-								<SelectTrigger>
-									<SelectValue placeholder="选择 API 提供商" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="openai">OpenAI</SelectItem>
-									<SelectItem value="anthropic">Anthropic</SelectItem>
-									<SelectItem value="custom">自定义</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-
-						<div className="space-y-2">
-							<Label htmlFor="api-endpoint">自定义端点</Label>
-							<Input
-								id="api-endpoint"
-								placeholder="https://api.openai.com/v1"
-								disabled
-							/>
-						</div>
-					</CardContent>
-				</Card>
-
-				<Card>
-					<CardHeader>
-						<CardTitle className="flex items-center gap-2">
-							<Brain className="h-5 w-5" />
-							模型设置
-						</CardTitle>
-						<CardDescription>
-							选择和配置 AI 模型参数
-						</CardDescription>
-					</CardHeader>
-					<CardContent className="space-y-4">
-						<div className="space-y-2">
-							<Label>AI 模型</Label>
-							<Select value={selectedModel} onValueChange={setSelectedModel}>
-								<SelectTrigger>
-									<SelectValue placeholder="选择 AI 模型" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="gpt-4">GPT-4</SelectItem>
-									<SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
-									<SelectItem value="claude-3">Claude 3</SelectItem>
-									<SelectItem value="custom">自定义模型</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
-
-						<Separator />
-
-						<div className="space-y-2">
-							<Label htmlFor="temperature">创造性 (Temperature): {temperature}</Label>
-							<input
-								id="temperature"
-								type="range"
-								min="0"
-								max="2"
-								step="0.1"
-								value={temperature}
-								onChange={(e) => setTemperature(parseFloat(e.target.value))}
-								className="w-full"
-							/>
-							<div className="flex justify-between text-xs text-muted-foreground">
-								<span>精确</span>
-								<span>平衡</span>
-								<span>创造</span>
-							</div>
-						</div>
-
-						<div className="space-y-2">
-							<Label htmlFor="max-tokens">最大回复长度</Label>
-							<Input
-								id="max-tokens"
-								type="number"
-								value={maxTokens}
-								onChange={(e) => setMaxTokens(parseInt(e.target.value))}
-								min="100"
-								max="8000"
-							/>
-							<p className="text-sm text-muted-foreground">
-								AI 回复的最大令牌数
-							</p>
-						</div>
-					</CardContent>
-				</Card>
-
-				<Card>
-					<CardHeader>
-						<CardTitle className="flex items-center gap-2">
-							<FileText className="h-5 w-5" />
-							系统提示词
-						</CardTitle>
-						<CardDescription>
-							定义 AI 助手的角色和行为
-						</CardDescription>
-					</CardHeader>
-					<CardContent className="space-y-4">
-						<div className="space-y-2">
-							<Label htmlFor="system-prompt">系统提示</Label>
-							<Textarea
-								id="system-prompt"
-								placeholder="你是一个有用的 AI 助手..."
-								value={systemPrompt}
-								onChange={(e) => setSystemPrompt(e.target.value)}
-								rows={4}
-							/>
-							<p className="text-sm text-muted-foreground">
-								这个提示词将作为 AI 的系统指令，影响所有回复
-							</p>
-						</div>
-
-						<Separator />
-
-						<div className="space-y-2">
-							<Label>预设模板</Label>
-							<div className="grid grid-cols-2 gap-2">
-								<Button variant="outline" size="sm">
-									通用助手
-								</Button>
-								<Button variant="outline" size="sm">
-									代码助手
-								</Button>
-								<Button variant="outline" size="sm">
-									学习伙伴
-								</Button>
-								<Button variant="outline" size="sm">
-									创意写作
+						{!configs.length && !isAdding && (
+							<div className="text-center py-8">
+								<p className="text-lg text-muted-foreground mb-4">还没有AI配置</p>
+								<Button onClick={() => setIsAdding(true)}>
+									<Plus className="h-4 w-4 mr-2" />
+									添加第一个配置
 								</Button>
 							</div>
-						</div>
-					</CardContent>
-				</Card>
+						)}
 
-				<Card>
-					<CardHeader>
-						<CardTitle className="flex items-center gap-2">
-							<MessageCircle className="h-5 w-5" />
-							聊天行为
-						</CardTitle>
-						<CardDescription>
-							自定义聊天的交互方式
-						</CardDescription>
-					</CardHeader>
-					<CardContent className="space-y-4">
-						<div className="space-y-2">
-							<Label>新对话触发</Label>
-							<Select defaultValue="explicit">
-								<SelectTrigger>
-									<SelectValue placeholder="选择触发方式" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="explicit">明确开始</SelectItem>
-									<SelectItem value="auto">自动开始</SelectItem>
-									<SelectItem value="context">根据上下文</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
+						{configs.map((config) => (
+							<Card key={config.id} className={cn(
+								"transition-colors",
+								config.isActive && "ring-2 ring-primary"
+							)}>
+								<CardContent className="pt-6">
+									<div className="flex items-center justify-between mb-4">
+										<div className="flex items-center gap-3">
+											<div className="flex items-center gap-2">
+												<Settings className="h-4 w-4 text-muted-foreground" />
+												<span className="font-medium">{config.name}</span>
+											</div>
+											<Badge variant="secondary">
+												{getProviderInfo(config.provider)?.label}
+											</Badge>
+											{config.isActive && (
+												<Badge variant="default">已启用</Badge>
+											)}
+										</div>
+										<div className="flex items-center gap-2">
+											{getTestResultIcon(config.testResult)}
+											<Switch
+												checked={config.isActive}
+												onCheckedChange={() => handleToggleActive(config.id)}
+											/>
+											<Button
+												variant="outline"
+												size="sm"
+												onClick={() => handleTestConnection(config.id)}
+												disabled={config.testResult === 'pending'}
+											>
+												<TestTube className="h-3 w-3 mr-1" />
+												测试
+											</Button>
+											<Button
+												variant="outline"
+												size="sm"
+												onClick={() => handleDeleteConfig(config.id)}
+											>
+												<Trash2 className="h-3 w-3" />
+											</Button>
+										</div>
+									</div>
+									<div className="space-y-2 text-sm">
+										<div>
+											<span className="font-medium text-muted-foreground">端点：</span>
+											<code className="text-xs bg-muted px-1 rounded">{config.endpoint}</code>
+										</div>
+										<div>
+											<span className="font-medium text-muted-foreground">Token：</span>
+											<code className="text-xs bg-muted px-1 rounded">
+												{config.token.substring(0, 8)}...
+											</code>
+										</div>
+									</div>
+								</CardContent>
+							</Card>
+						))}
 
-						<Separator />
+						{isAdding && (
+							<Card>
+								<CardContent className="pt-6">
+									<div className="space-y-4">
+										<div>
+											<Label htmlFor="config-name">配置名称</Label>
+											<Input
+												id="config-name"
+												placeholder="例如：我的OpenAI配置"
+												value={newConfig.name}
+												onChange={(e) => setNewConfig(prev => ({ ...prev, name: e.target.value }))}
+											/>
+										</div>
 
-						<div className="space-y-2">
-							<Label>回复显示</Label>
-							<Select defaultValue="stream">
-								<SelectTrigger>
-									<SelectValue placeholder="选择显示方式" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="stream">流式显示</SelectItem>
-									<SelectItem value="complete">完整显示</SelectItem>
-								</SelectContent>
-							</Select>
-						</div>
+										<div>
+											<Label htmlFor="config-provider">AI提供商</Label>
+											<Select value={newConfig.provider} onValueChange={handleProviderChange}>
+												<SelectTrigger>
+													<SelectValue placeholder="选择AI提供商" />
+												</SelectTrigger>
+												<SelectContent>
+													{providerOptions.map((option) => (
+														<SelectItem key={option.value} value={option.value}>
+															<div>
+																<div className="font-medium">{option.label}</div>
+																<div className="text-xs text-muted-foreground">{option.description}</div>
+															</div>
+														</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
+										</div>
 
-						<Separator />
+										<div>
+											<Label htmlFor="config-endpoint">API端点</Label>
+											<Input
+												id="config-endpoint"
+												placeholder="https://api.openai.com/v1"
+												value={newConfig.endpoint}
+												onChange={(e) => setNewConfig(prev => ({ ...prev, endpoint: e.target.value }))}
+											/>
+										</div>
 
-						<div className="flex items-center justify-between">
-							<div className="space-y-0.5">
-								<Label className="text-base">显示思考过程</Label>
-								<p className="text-sm text-muted-foreground">
-									显示 AI 的推理过程（如果支持）
-								</p>
+										<div>
+											<Label htmlFor="config-token">API Token</Label>
+											<Input
+												id="config-token"
+												type="password"
+												placeholder="sk-..."
+												value={newConfig.token}
+												onChange={(e) => setNewConfig(prev => ({ ...prev, token: e.target.value }))}
+											/>
+										</div>
+
+										<div className="flex gap-2">
+											<Button onClick={handleAddConfig}>
+												添加配置
+											</Button>
+											<Button variant="outline" onClick={() => setIsAdding(false)}>
+												取消
+											</Button>
+										</div>
+									</div>
+								</CardContent>
+							</Card>
+						)}
+
+						{configs.length > 0 && !isAdding && (
+							<div className="flex gap-2">
+								<Button onClick={() => setIsAdding(true)}>
+									<Plus className="h-4 w-4 mr-2" />
+									添加配置
+								</Button>
+								<Button variant="outline" onClick={handleSaveConfigs}>
+									保存所有配置
+								</Button>
 							</div>
-							<input type="checkbox" className="toggle" />
-						</div>
+						)}
 					</CardContent>
 				</Card>
 			</div>
@@ -239,4 +345,4 @@ const AIConfig = () => {
 	);
 };
 
-export default AIConfig;
+export default AiConfigs;
