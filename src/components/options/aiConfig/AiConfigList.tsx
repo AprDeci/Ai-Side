@@ -1,10 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { ConfigItem } from "./ConfigItem";
-import type { AiConfig } from "@/types/types";
 
 interface AiConfigListProps {
-	configs: AiConfig[];
+	configs: ConfigTypes.AiConfig[];
 	onDeleteConfig: (id: string) => void;
 	onToggleActive: (id: string) => void;
 	onTestConnection: (id: string) => void;
