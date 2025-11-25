@@ -1,47 +1,41 @@
 "use client";
 
+import { openai } from "@ai-sdk/openai";
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
+import {
+  convertToModelMessages,
+  DefaultChatTransport,
+  streamText,
+  UIMessage
+} from "ai";
 import { useState } from "react";
 
-export default function Page() {
-	const { messages, sendMessage, status } = useChat({
-		transport: new DefaultChatTransport({
-			api: "/api/chat",
-		}),
-	});
-	const [input, setInput] = useState("");
+const sendMessage = (message: UIMessage[]) => {
+  const result = streamText({
+    model: openai("gpt-3.5-turbo"),
+    system: "You are a helpful assistant.",
+    messages: convertToModelMessages(message)
+  });
 
-	return (
-		<>
-			{messages.map((message) => (
-				<div key={message.id}>
-					{message.role === "user" ? "User: " : "AI: "}
-					{message.parts.map((part, index) =>
-						part.type === "text" ? <span key={index}>{part.text}</span> : null,
-					)}
-				</div>
-			))}
+  return result.toUIMessageStreamResponse();
+};
 
-			<form
-				onSubmit={(e) => {
-					e.preventDefault();
-					if (input.trim()) {
-						sendMessage({ text: input });
-						setInput("");
-					}
-				}}
-			>
-				<input
-					value={input}
-					onChange={(e) => setInput(e.target.value)}
-					disabled={status !== "ready"}
-					placeholder="Say something..."
-				/>
-				<button type="submit" disabled={status !== "ready"}>
-					Submit
-				</button>
-			</form>
-		</>
-	);
+class CustomTransport implements DefaultChatTransport<UIMessage> {
+  async send(
+    messages: UIMessage[],
+    abortSignal?: AbortSignal
+  ): Promise<Response> {
+    const uiMessages: UIMessage[] = messages as UIMessage[]; // 简单转换
+    return sendMessage(uiMessages); // 直接调用你的方法！
+  }
 }
+
+const chatContainer = () => {
+  const { messages, sendMessage, status } = useChat({
+    transport: new CustomTransport()
+  });
+
+  return <></>;
+};
+
+export default chatContainer;
