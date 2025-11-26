@@ -4,19 +4,6 @@ import { customOpenAI } from "@/ai/customProvider";
 import { openai } from "@ai-sdk/openai";
 import { useChat as useChatOri } from "@ai-sdk/react";
 import { useChat } from "@/hooks/useChat";
-import {
-  ChatTransport,
-  convertToModelMessages,
-  DefaultChatTransport,
-  HttpChatTransport,
-  HttpChatTransportInitOptions,
-  streamText,
-  TextStreamPart,
-  ToolSet,
-  UIMessage,
-  UIMessageChunk,
-  uiMessageChunkSchema
-} from "ai";
 import { useState } from "react";
 
 const chatContainer = () => {
