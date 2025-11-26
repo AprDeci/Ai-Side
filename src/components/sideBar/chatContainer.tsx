@@ -2,7 +2,8 @@
 
 import { customOpenAI } from "@/ai/customProvider";
 import { openai } from "@ai-sdk/openai";
-import { useChat } from "@ai-sdk/react";
+import { useChat as useChatOri } from "@ai-sdk/react";
+import { useChat } from "@/hooks/useChat";
 import {
   ChatTransport,
   convertToModelMessages,
@@ -18,28 +19,10 @@ import {
 } from "ai";
 import { useState } from "react";
 
-const customFetch = async (
-  _input: RequestInfo | URL,
-  init?: RequestInit | undefined
-) => {
-  const m = JSON.parse(init?.body as string);
-  console.log(m);
-  const result = streamText({
-    model: customOpenAI.chat("deepseek-ai/DeepSeek-V3"),
-    messages: convertToModelMessages(m.messages),
-    abortSignal: init?.signal as AbortSignal | undefined,
-    providerOptions: {}
-  });
-
-  return result.toUIMessageStreamResponse();
-};
-
 const chatContainer = () => {
-  const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({
-      fetch: customFetch
-    })
-  });
+  const model = customOpenAI.chat("deepseek-ai/DeepSeek-V3");
+
+  const { messages, sendMessage, status } = useChat(model);
 
   const [input, setInput] = useState("");
 
