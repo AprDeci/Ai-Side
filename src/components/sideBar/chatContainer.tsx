@@ -1,5 +1,6 @@
 "use client";
 
+import { customOpenAI } from "@/ai/customProvider";
 import { openai } from "@ai-sdk/openai";
 import { useChat } from "@ai-sdk/react";
 import {
@@ -15,7 +16,6 @@ import {
   UIMessageChunk,
   uiMessageChunkSchema
 } from "ai";
-import { parseJsonEventStream, ParseResult } from "@ai-sdk/provider-utils";
 import { useState } from "react";
 
 const customFetch = async (
@@ -23,10 +23,12 @@ const customFetch = async (
   init?: RequestInit | undefined
 ) => {
   const m = JSON.parse(init?.body as string);
+  console.log(m);
   const result = streamText({
-    model: openai("gpt-3.5-turbo"),
+    model: customOpenAI.chat("deepseek-ai/DeepSeek-V3"),
     messages: convertToModelMessages(m.messages),
-    abortSignal: init?.signal as AbortSignal | undefined
+    abortSignal: init?.signal as AbortSignal | undefined,
+    providerOptions: {}
   });
 
   return result.toUIMessageStreamResponse();
