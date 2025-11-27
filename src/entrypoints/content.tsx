@@ -13,6 +13,7 @@ export default defineContentScript({
   cssInjectionMode: "ui", // 关键：隔离样式
 
   async main(ctx) {
+    console.log("Content script loaded");
     const ui = await createShadowRootUi(ctx, {
       name: "my-in-page-sidebar",
       position: "inline", // 必须是 inline，因为我们内部用了 fixed 定位
