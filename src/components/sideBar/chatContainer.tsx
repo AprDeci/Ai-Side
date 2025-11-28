@@ -5,6 +5,8 @@ import { openai } from "@ai-sdk/openai";
 import { useChat as useChatOri } from "@ai-sdk/react";
 import { useChat } from "@/hooks/useChat";
 import { useState } from "react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const chatContainer = () => {
   const model = customOpenAI.chat("deepseek-ai/DeepSeek-V3");
@@ -13,8 +15,13 @@ const chatContainer = () => {
 
   const [input, setInput] = useState("");
 
+  const markdown = `Just a link: www.nasa.gov.`;
+
   return (
     <>
+      <div>
+        <Markdown remarkPlugins={[remarkGfm]}>{markdown}</Markdown>
+      </div>
       {messages.map((message) => (
         <div key={message.id}>
           {message.role === "user" ? "User: " : "AI: "}
