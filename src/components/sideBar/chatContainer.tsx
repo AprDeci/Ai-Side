@@ -74,7 +74,7 @@ const chatContainer = () => {
     <>
       <div className="h-full">
         {
-          <Conversation className="h-4/5">
+          <Conversation className="h-5/6">
             <ConversationContent>
               {messages.map((message) => (
                 <div key={message.id}>
@@ -164,11 +164,11 @@ const chatContainer = () => {
             className="mt-4"
             globalDrop
             multiple>
-            <PromptInputHeader>
+            {/* <PromptInputHeader>
               <PromptInputAttachments>
                 {(attachment) => <PromptInputAttachment data={attachment} />}
               </PromptInputAttachments>
-            </PromptInputHeader>
+            </PromptInputHeader> */}
             <PromptInputBody>
               <PromptInputTextarea
                 onChange={(e) => setInput(e.target.value)}
