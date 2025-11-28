@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, MessageSquare } from "lucide-react"; // 假设你安装了 lucide-react 图标库，如果没有可以用文本代替
 import ChatContainer from "./sideBar/chatContainer";
@@ -7,19 +7,6 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const sidebarWidth = "w-[350px]";
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.transition =
-        "margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
-      document.body.style.marginRight = "350px";
-    } else {
-      document.body.style.marginRight = "0px";
-    }
-    return () => {
-      document.body.style.marginRight = "0px";
-    };
-  }, [isOpen]);
 
   return (
     <>
@@ -60,7 +47,7 @@ export default function Sidebar() {
           </div>
 
           {/* 滚动区域 */}
-          <div className="flex-1 p-5 overflow-y-auto">
+          <div className="flex-1 p-5 overflow-y-auto overflow-x-hidden">
             <ChatContainer />
           </div>
         </div>
