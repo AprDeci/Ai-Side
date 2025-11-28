@@ -1,12 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ButtonGroup, ButtonGroupText } from "@/components/ui/button-group";
+import {
+  ButtonGroup,
+  ButtonGroupText,
+} from "@/components/ui/button-group";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import type { FileUIPart, UIMessage } from "ai";
@@ -14,10 +17,11 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   PaperclipIcon,
-  XIcon
+  XIcon,
 } from "lucide-react";
 import type { ComponentProps, HTMLAttributes, ReactElement } from "react";
 import { createContext, memo, useContext, useEffect, useState } from "react";
+import { Streamdown } from "streamdown";
 
 export type MessageProps = HTMLAttributes<HTMLDivElement> & {
   from: UIMessage["role"];
@@ -48,7 +52,8 @@ export const MessageContent = ({
       "group-[.is-assistant]:text-foreground",
       className
     )}
-    {...props}>
+    {...props}
+  >
     {children}
   </div>
 );
@@ -163,7 +168,7 @@ export const MessageBranch = ({
     goToPrevious,
     goToNext,
     branches,
-    setBranches
+    setBranches,
   };
 
   return (
@@ -199,7 +204,8 @@ export const MessageBranchContent = ({
         index === currentBranch ? "block" : "hidden"
       )}
       key={branch.key}
-      {...props}>
+      {...props}
+    >
       {branch}
     </div>
   ));
@@ -246,7 +252,8 @@ export const MessageBranchPrevious = ({
       size="icon-sm"
       type="button"
       variant="ghost"
-      {...props}>
+      {...props}
+    >
       {children ?? <ChevronLeftIcon size={14} />}
     </Button>
   );
@@ -269,7 +276,8 @@ export const MessageBranchNext = ({
       size="icon-sm"
       type="button"
       variant="ghost"
-      {...props}>
+      {...props}
+    >
       {children ?? <ChevronRightIcon size={14} />}
     </Button>
   );
@@ -289,28 +297,29 @@ export const MessageBranchPage = ({
         "border-none bg-transparent text-muted-foreground shadow-none",
         className
       )}
-      {...props}>
+      {...props}
+    >
       {currentBranch + 1} of {totalBranches}
     </ButtonGroupText>
   );
 };
 
-// export type MessageResponseProps = ComponentProps<typeof Streamdown>;
+export type MessageResponseProps = ComponentProps<typeof Streamdown>;
 
-// export const MessageResponse = memo(
-//   ({ className, ...props }: MessageResponseProps) => (
-//     <Streamdown
-//       className={cn(
-//         "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
-//         className
-//       )}
-//       {...props}
-//     />
-//   ),
-//   (prevProps, nextProps) => prevProps.children === nextProps.children
-// );
+export const MessageResponse = memo(
+  ({ className, ...props }: MessageResponseProps) => (
+    <Streamdown
+      className={cn(
+        "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
+        className
+      )}
+      {...props}
+    />
+  ),
+  (prevProps, nextProps) => prevProps.children === nextProps.children
+);
 
-// MessageResponse.displayName = "MessageResponse";
+MessageResponse.displayName = "MessageResponse";
 
 export type MessageAttachmentProps = HTMLAttributes<HTMLDivElement> & {
   data: FileUIPart;
@@ -336,7 +345,8 @@ export function MessageAttachment({
         "group relative size-24 overflow-hidden rounded-lg",
         className
       )}
-      {...props}>
+      {...props}
+    >
       {isImage ? (
         <>
           <img
@@ -355,7 +365,8 @@ export function MessageAttachment({
                 onRemove();
               }}
               type="button"
-              variant="ghost">
+              variant="ghost"
+            >
               <XIcon />
               <span className="sr-only">Remove</span>
             </Button>
@@ -382,7 +393,8 @@ export function MessageAttachment({
                 onRemove();
               }}
               type="button"
-              variant="ghost">
+              variant="ghost"
+            >
               <XIcon />
               <span className="sr-only">Remove</span>
             </Button>
@@ -410,7 +422,8 @@ export function MessageAttachments({
         "ml-auto flex w-fit flex-wrap items-start gap-2",
         className
       )}
-      {...props}>
+      {...props}
+    >
       {children}
     </div>
   );
@@ -428,7 +441,8 @@ export const MessageToolbar = ({
       "mt-4 flex w-full items-center justify-between gap-4",
       className
     )}
-    {...props}>
+    {...props}
+  >
     {children}
   </div>
 );
