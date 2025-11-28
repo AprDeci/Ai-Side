@@ -7,7 +7,14 @@ import { useChat } from "@/hooks/useChat";
 import { useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { CopyIcon, GlobeIcon, Loader, RefreshCcwIcon } from "lucide-react";
+import {
+  CopyIcon,
+  FileImage,
+  GlobeIcon,
+  Loader,
+  Plus,
+  RefreshCcwIcon
+} from "lucide-react";
 import { models } from "tokenlens";
 import {
   PromptInput,
@@ -53,6 +60,15 @@ import {
   SourcesContent,
   Source
 } from "../ai-elements/sources";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem
+} from "@/components/ui/dropdown-menu";
+import { Button } from "../ui/button";
 
 const chatContainer = () => {
   const model = customOpenAI.chat("deepseek-ai/DeepSeek-V3");
@@ -176,14 +192,25 @@ const chatContainer = () => {
               />
             </PromptInputBody>
             <PromptInputFooter>
-              <PromptInputTools>
+              {/* <PromptInputTools>
                 <PromptInputActionMenu>
                   <PromptInputActionMenuTrigger />
-                  <PromptInputActionMenuContent>
+                  <PromptInputActionMenuContent
+                    side="top"
+                    align="end"
+                    className="z-[2147483648]">
                     <PromptInputActionAddAttachments />
                   </PromptInputActionMenuContent>
                 </PromptInputActionMenu>
-              </PromptInputTools>
+              </PromptInputTools> */}
+
+              <div className="promptToolContainer">
+                <div>
+                  <Button variant="ghost">
+                    <FileImage />
+                  </Button>
+                </div>
+              </div>
               <PromptInputSubmit disabled={!input && !status} status={status} />
             </PromptInputFooter>
           </PromptInput>

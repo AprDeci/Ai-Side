@@ -11,7 +11,7 @@ export default function Sidebar() {
   return (
     <>
       <div
-        className={`fixed top-0 right-0 h-screen ${sidebarWidth} bg-white shadow-[-4px_0_15px_rgba(0,0,0,0.1)] z-[2147483647] transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 h-screen ${sidebarWidth} bg-white shadow-[-4px_0_15px_rgba(0,0,0,0.1)] z-[10001] transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}>
         <div className="absolute top-1/2 left-0 -translate-x-full -translate-y-1/2 flex items-center">
